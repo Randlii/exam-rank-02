@@ -6,7 +6,7 @@
 /*   By: mcarrete <mcarrete@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/01/26 15:09:01 by mcarrete          #+#    #+#             */
-/*   Updated: 2020/01/27 20:29:02 by mcarrete         ###   ########.fr       */
+/*   Updated: 2020/01/27 23:09:24 by mcarrete         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -41,20 +41,18 @@ int		find_repeated(char *rep , int i)
 ** con todos los del segundo argv. Si es igual (pero no se ha repetido antes -
 ** para ello la funcion de arriba), devuelve el char.
 */
-void	inter(int argc, char **argv)
+void	inter(char **argv)
 {
 	int i;
 	int j;
-	char *rep;
 
-	rep = argv[1];
 	i = 0;
 	while (argv[1][i] != '\0' && argv[2][i] != '\0')
 	{
 		j = 0;
 		while (argv[2][j] != '\0')
 		{
-			if (argv[1][i] == argv[2][j] && find_repeated(rep, i) != 1)
+			if (argv[1][i] == argv[2][j] && find_repeated(argv[1], i) != 1)
 			{
 				write(1, &argv[1][i], 1);
 				break;
@@ -79,7 +77,7 @@ int		main(int argc, char **argv)
 		return (0);
 	}
 	else
-		inter(argc, argv);
+		inter(argv);
 	return (0);
 }
 
