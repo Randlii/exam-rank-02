@@ -1,0 +1,24 @@
+28c28
+< s10w ~          ` ~  toto` ~0123456789` ~tjehurthteutuiehteute` ~(null)`
+---
+> s10w ~          ` ~      toto` ~0123456789` ~tjehurthteutuiehteute` ~    (null)`
+39,42c39,42
+< d4w0p       42    1 4554 2147483647 -2147483648 -2147483648 2147483647
+< d10w0p                   42          1       4554 2147483647 -2147483648 -2147483648 2147483647
+< x4w0p       2a    1 11ca 7fffffff 80000000 80000000 7fffffff
+< x10w0p                   2a          1       11ca   7fffffff   80000000   80000000   7fffffff
+---
+> d4w0p        42    1 4554 2147483647 -2147483648 -2147483648 2147483647
+> d10w0p                    42          1       4554 2147483647 -2147483648 -2147483648 2147483647
+> x4w0p        2a    1 11ca 7fffffff 80000000 80000000 7fffffff
+> x10w0p                    2a          1       11ca   7fffffff   80000000   80000000   7fffffff
+54,55c54,55
+< s10w4p ~          ` ~  toto` ~  0123` ~  tjeh` ~  (nul`
+< s10w10p ~          ` ~  toto` ~0123456789` ~tjehurthte` ~(null)`
+---
+> s10w4p ~          ` ~      toto` ~      0123` ~      tjeh` ~      (nul`
+> s10w10p ~          ` ~      toto` ~0123456789` ~tjehurthte` ~    (null)`
+57c57
+< s4w10p ~          ` ~  toto` ~0123456789` ~tjehurthte` ~(null)`
+---
+> s4w10p ~          ` ~      toto` ~0123456789` ~tjehurthte` ~    (null)`
