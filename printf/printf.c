@@ -6,7 +6,7 @@
 /*   By: mcarrete <mcarrete@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/01/29 08:43:36 by mcarrete          #+#    #+#             */
-/*   Updated: 2020/02/02 19:40:43 by mcarrete         ###   ########.fr       */
+/*   Updated: 2020/02/03 19:27:40 by mcarrete         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -41,7 +41,7 @@ void				ft_putnbr_base(int n, int base)
 	write(1, &c, 1);
 }
 
-static int			ft_len_calc(unsigned long int nb, int base) //cuidado con el tipo!!!!
+static int			ft_len_calc(unsigned long int nb, unsigned long int base) //cuidado con el tipo!!!!
 {
 	int i;
 
@@ -55,14 +55,11 @@ static int			ft_len_calc(unsigned long int nb, int base) //cuidado con el tipo!!
 	return (i);
 }
 
-int			ft_putspaceandzero(int len, int precision, int width, int is_negative, char c)
+int			ft_putspaceandzero(int len, int precision, int width, int is_negative)
 {
 	int i;
 	int num;
-	//if (c == 'd' || c == 'x' || c == 's')
 	precision = len > precision ? len : precision;
-	/*if (c == 's')
-		precision = len < precision ? len : precision;*/
 	width = width > precision ? width : precision;
 	i = 0;
 	num = 0;
@@ -98,9 +95,9 @@ int			str_output(int ret, int width, int precision, va_list args)
 		str = "(null)";
 	len = ft_strlen(str);
 	len = (precision >= 0 && precision < len) ? precision : len;
-	width = width >= len ? (width - len) : width;
+	width = width > len ? (width - len) : 0; //si width no es mayor q len entonces se imprimen 0 espacios
 	i = 0;
-	while (i < (width - len))
+	while (i < width)
 	{
 		write(1, " ", 1);
 		i++;
@@ -126,11 +123,11 @@ int			hex_output(int ret, int width, int precision, va_list args)
 	hex_arg = va_arg(args, unsigned int);
 	if (precision == 0 && hex_arg == 0)
 		is_null = -1;
-	len = ft_len_calc(hex_arg, 16);
-	ret += ft_putspaceandzero(len, precision, width, 0, 'x');
+	len = is_null == -1 ? 0 : ft_len_calc(hex_arg, 16);
+	ret += ft_putspaceandzero(len, precision, width, 0);
 	if (is_null != -1)
 		ft_putnbr_base(hex_arg, 16);
-	ret += len + is_null; //xq ya le dijimos que es el max.
+	ret += len; //xq ya le dijimos que es el max.
 	return (ret);
 }
 
@@ -152,11 +149,11 @@ int			int_output(int ret, int width, int precision, va_list args)
 		arg *= -1; //para que ya no se pase como negativo.
 		width += -1; //para que no cuente el menos!!
 	}
-	len = ft_len_calc(arg, 10);
-	ret = ret + ft_putspaceandzero(len, precision, width, is_negative, 'd');// este imprime el ' ', el '-' y el 0
+	len = is_null == -1 ? 0 : ft_len_calc(arg, 10); //si precision es 0 y el arg es 0, no imprime nada, osea len = 0
+	ret = ret + ft_putspaceandzero(len, precision, width, is_negative);// este imprime el ' ', el '-' y el 0
 	if (is_null != -1)
 		ft_putnbr_base(arg, 10); //no imprime el -
-	ret += len + is_null;
+	ret += len;
 	return (ret);
 }
 
@@ -176,10 +173,7 @@ int			ft_printf(const char *str, ...)
 	while (str[i] != '\0')
 	{
 		if (str[i] != '%' && str[i])
-		{
 			ret += write(1, &str[i], 1);
-			i++;
-		}
 		if (str[i] == '%')
 		{
 			width = 0;
@@ -201,24 +195,15 @@ int			ft_printf(const char *str, ...)
 				}
 			}
 			if (str[i] == 'd')
-			{
 				ret = int_output(ret, width, precision, args);
-				i++;
-			}
 			else if (str[i] == 'x')
-			{
 				ret = hex_output(ret, width, precision, args);
-				i++;
-			}
 			else if (str[i] == 's')
-			{
 				ret = str_output(ret, width, precision, args);
-				i++;
-			}
 		}
-
+		i++;
 	}
-	if (ret <= 0)
+	if (ret <= 0) //error
 		write(1, "", 0);
 	va_end(args);
 	return (ret);
@@ -284,9 +269,10 @@ int		main()
     ft_printf("%d\n", y);
 
 
-
-	my_ret = ft_printf("s4w ~%4s` ~%4s` ~%4s` ~%4s` ~%4s`\n", "", "toto", "0123456789", "tjehurthteutuiehteute", NULL);
-	original_ret = printf("s4w ~%4s` ~%4s` ~%4s` ~%4s` ~%4s`\n", "", "toto", "0123456789", "tjehurthteutuiehteute", NULL);
+	my_ret = ft_printf("d0w %0d %0d %0d %0d %0d %0d %0d %0d\n", 0, 42, 1, 4554, 2147483647, (int)2147483648, (int)-2147483648, (int)-2147483649);
+	printf("\n");
+	original_ret = printf("d0w %0d %0d %0d %0d %0d %0d %0d %0d\n", 0, 42, 1, 4554, 2147483647, (int)2147483648, (int)-2147483648, (int)-2147483649);
+	printf("\n");
 	printf("\nMy ret: %d\nOriginal_ret %d\n", my_ret, original_ret);
 
 
@@ -301,10 +287,7 @@ int		main()
 
 }
 
- */
 
-
-/*
 int main (void)
 {
     int    r;
@@ -390,8 +373,8 @@ int main (void)
 }
     //  printf("written: %d\n", r);
 
- //printf("%s", "---------------------");*/
-
+ //printf("%s", "---------------------");
+*/
 
 int main (void)
 {
@@ -476,4 +459,3 @@ int main (void)
     printf("s4w4p ~%4.4s` ~%4.4s` ~%4.4s` ~%4.4s` ~%4.4s`\n", "", "toto", "0123456789", "tjehurthteutuiehteute", NULL);
     printf("s4w10p ~%10.10s` ~%10.10s` ~%10.10s` ~%10.10s` ~%10.10s`\n", "", "toto", "0123456789", "tjehurthteutuiehteute", NULL);
 }
-
